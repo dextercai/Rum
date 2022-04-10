@@ -7,7 +7,7 @@ networks:
 services:
   rum_service:
     container_name: drc_rum_core
-    image: drcai-docker.pkg.coding.net/dextercai_personal_simfly/docker/rum:3.1.0
+    image: <dockerCenter>/rum:3.1.0
     ports:
      - 6809:6809
      - 6810:6810
@@ -19,7 +19,7 @@ services:
 
   rum_web_api:
     container_name: drc_rum_api
-    image: drcai-docker.pkg.coding.net/dextercai_personal_simfly/docker/seagull:dev
+    image: <dockerCenter>/seagull:dev
     ports:
      - 8080:8080
     command: /usr/bin/dumb-init -- /run/SeagullServer -listen=0.0.0.0:8080 -pergola-service=http://drc_rum_core:6810/ -ga-data-dir=/run/data/ga/ -redis=redis:6379
@@ -28,7 +28,7 @@ services:
   
   rum_plugin:
     container_name: drc_rum_plugin
-    image: /run/rumPluginService drcai-docker.pkg.coding.net/dextercai_personal_simfly/docker/rum_plugin:dev
+    image: <dockerCenter>/rum_plugin:dev
     ports:
      - 6811:6811
     command: /bin/bash -c "/run/rumPluginService -listen=0.0.0.0:6811 -redis=redis:6379"
