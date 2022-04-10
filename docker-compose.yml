@@ -1,0 +1,35 @@
+version: '3'
+
+networks:
+  backend:
+    driver: bridge
+
+services:
+  rum_service:
+    container_name: drc_rum_core
+    image: drcai-docker.pkg.coding.net/dextercai_personal_simfly/docker/rum:3.1.0
+    ports:
+     - 6809:6809
+     - 6810:6810
+    command: /bin/bash -c "/run/rumServer -ap=1 -cert=cert.txt -certCheckCron=@every 1m -clientPort=0.0.0.0:6809 -handIn=1 -httpServerHost=0.0.0.0:6810 -motd=motd.txt -nodeInfo=Flight Service -nodeName=rum2022 -wzpCheckCorn=@every 30s -wzpFileLocation=wzp.txt -plugin=drc_rum_plugin:6811"
+    # Using the absolute path is the best practices for Docker which is also my suggestion
+  
+  redis:
+    image: "redis:alpine"
+
+  rum_web_api:
+    container_name: drc_rum_api
+    image: drcai-docker.pkg.coding.net/dextercai_personal_simfly/docker/seagull:dev
+    ports:
+     - 8080:8080
+    command: /usr/bin/dumb-init -- /run/SeagullServer -listen=0.0.0.0:8080 -pergola-service=http://drc_rum_core:6810/ -ga-data-dir=/run/data/ga/ -redis=redis:6379
+    # In docker we must use dumb-init to make sure the fork can be managed by main process.
+
+  
+  rum_plugin:
+    container_name: drc_rum_plugin
+    image: /run/rumPluginService drcai-docker.pkg.coding.net/dextercai_personal_simfly/docker/rum_plugin:dev
+    ports:
+     - 6811:6811
+    command: /bin/bash -c "/run/rumPluginService -listen=0.0.0.0:6811 -redis=redis:6379"
+    
