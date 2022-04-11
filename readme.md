@@ -5,7 +5,7 @@ RumService is an alternative software for fsd.
 It might be useful for:
 - Personal flight group
 - SimFlight Community
-- Bussinss flight group
+- Bussiness flight group
 - STEM or academic
 
 # How to use?
